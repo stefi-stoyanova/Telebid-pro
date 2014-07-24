@@ -13,13 +13,19 @@ int main()
 	do
 	{
 		cin >> n >> a >> b >>c;
-	} 
+		if(!cin) 
+		{
+			cout << "Wrong input!\n";
+			return -1;
+		} 
+	
+	}
 	while (!(n>0 && a>0 && b>0 && c>0 && n <100000&& a<100000 && b<100000 && c<100000));
 	
 	int metri=n;
 	
-	int* georgi =  new int[n/a];
-	int * geri = new int [n/b];
+	int* georgi =  new int[n/a + 1];
+	int * geri = new int [n/b+ 1];
 	
 	for(int i=0; a*i<=n; i++)
 		georgi[i]=a*i;
