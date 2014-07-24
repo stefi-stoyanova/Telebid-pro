@@ -27,7 +27,7 @@ int main()
 	for(int i=0; b*i<=n; i++ )
 	{
 		geri[i]=n - b*i;
-		for (int k=0; k<n/a; k++)
+		for (int k=0; k<=n/a; k++)
 		{
 			if (geri[i]-georgi[k]==c || geri[i]-georgi[k]==-c)
 				metri -=c;
