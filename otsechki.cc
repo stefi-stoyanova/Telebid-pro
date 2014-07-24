@@ -35,6 +35,9 @@ int main()
 	}
 	cout << metri << endl;
 	
+	delete []georgi;
+	delete []geri;
+	
 	return 0;
 	
 }
