@@ -1,0 +1,179 @@
+<html>
+<head> 
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"> </script>
+
+</head>
+<body>
+
+
+	<div id="menu">
+		<button id="mType">Types</button>
+		<button id="mModel">Models</button>
+		<button id="mNetwork">Networks</button>
+		<button id="mComputer">Computers</button>
+		<button id="mDevice">Network devices</button>
+		<button id="mPart">Hardware parts</button>           
+		<button id="mSearch">Search</button>
+		<br>
+		<br>
+	</div>
+
+	<div id="computersPage">
+
+
+	<form id="formType" style="display:none">
+		Type: <input type="text"  id="type"/ >
+		<button id="btype">Save</button>
+		
+
+		
+		<input type="text"  id="typeSearch"/ >
+		<button class ='search'>Search</button>
+		<br><br>
+
+		<table class="tables" name="types" id="typeTable" border="1" style="float:left" width="200px">
+			<thead><tr bgcolor="AA00FF"> <td> type </td></tr></thead>
+		</table>
+		Page <input size="2" id="page1" style="botom"> </input>
+		<button id='typeTableNext' name='1'; class='next'> Go </button>
+		
+
+		
+	</form>
+
+	<form id="formUpdateType" style="display:none; margin-left:21px; float: left">
+		Update type: <input type="text"  id="utype"/ >
+		<button id="butype">Save</button>
+		<br><br>
+	</form>
+
+
+	<form id="formModel" style="display:none">
+		Model: <input type="text"  id="model"/ >
+		Model Type: <select form="modelType" id = "modelType"></select>
+		<button id="bmodel">Save</button>
+		<br><br>
+
+		<table class="tables" id="modelTable" name="models" style="float: left" border="1">
+			<tr bgcolor="AA00FF"> <td> model </td><td> type </td> </tr>
+		</table>
+		Page <input size="2" id="page2" style="botom"> </input>
+		<button id='modelTableNext' name='1'; class='next'> Go </button>
+	</form>
+
+	<form id="formUpdateModel" style="display:none; margin-left:21px; float: left">
+		Update model: <input type="text"  id="umodel"/ >
+		Model Type: <select id = "umodelType"></select>
+		<button id="bumodel">Save</button>
+		<br><br>
+	</form>
+
+	<form id="formNetwork" style="display:none">
+		Update network: <input type="text"  id="network"/ >
+		<button id="bnetwork">Save</button>
+		<br><br>
+
+		<table class="tables" id="networkTable" name="networks" style="float: left" border="1">
+			<tr bgcolor="AA00FF"> <td> network </td> </tr>
+		</table>
+		Page <input size="2" id="page3" style="botom"> </input>
+		<button id='networkTableNext' name='1'; class='next'> Go </button>
+	</form>
+
+	<form id="formUpdateNetwork" style="display:none; margin-left:21px; float: left">
+		Update type: <input type="text"  id="unetwork"/ >
+		<button id="bunetwork">Save</button>
+		<br><br>
+	</form>
+
+	<form id="formComputer" style="display:none">
+		Computer: <input type="text"  id="computer"/ >
+		Computer network: <select form="computerNetwork" id = "computerNetwork">
+		</select>
+		<button id="bcomputer">Save</button>
+		<br><br>
+
+		<table class="tables" id="computerTable" name="computers" style="float: left" border="1">
+			<tr bgcolor="AA00FF"> <td> host name </td> <td> network </td> </tr>
+		</table>
+		Page <input size="2" id="page4" style="botom"> </input>
+		<button id='computerTableNext' name='1'; class='next'> Go </button>
+	</form>
+
+	<form id="formUpdateComputer" style="display:none; margin-left:21px; float: left">
+		Update model: <input type="text"  id="ucomputer"/ >
+		Model Type: <select id = "ucomputerNetwork"></select>
+		<button id="bucomputer">Save</button>
+		<br><br>
+	</form>
+
+	<form id="formDevice" style="display:none">
+		Serial number: <input type="text"  id="deviceSerialNumber"/ >
+		Network device warranty: <input type="date"  id="deviceWarranty"/ >
+		Model: <select form="deviceModel" id = "deviceModel">
+		</select>
+		Network: <select form="deviceNetwork" id = "deviceNetwork">
+		</select>
+		<button id="bdevice">Save</button>
+		<br><br>
+
+		<table class="tables" id="devicesTable" name="network_devices" style="float: left" border="1">
+			<tr bgcolor="AA00FF"> <td> serial_number</td> <td> warranty </td> <td> model </td> <td> network </td> </tr>
+		</table>
+		Page <input size="2" id="page5" style="botom"> </input>
+		<button id='deviceTableNext' name='1'; class='next'> Go </button>
+	</form>
+
+	<form id="formUpdateDevice" style="display:none; margin-left:21px; float: left">
+		Serial number: <input type="text"  id="udeviceSerialNumber"/ >
+		Network device warranty: <input type="date"  id="udeviceWarranty"/ >
+		Model: <select id = "udeviceModel"> </select>
+		Network: <select id = "udeviceNetwork"> </select>
+		<button id="budevice">Save</button>
+	</form>
+
+	<form id="formPart" style="display:none"> 
+		Serial number: <input type="text"  id="partSerialNumber"/ >
+		Hardware part warranty: <input type="date"  id="partWarranty"/ >
+		Model: <select form="partModel" id = "partModel">
+		</select>
+		Computer: <select form="partComputer" id = "partComputer">
+		</select>
+		<button id="bpart">Save</button>
+		<br><br>
+
+		<table id="partsTable" name="hardware_parts" style="float: left" border="1">
+			<tr bgcolor="AA00FF"><td> serial_number</td> <td> warranty </td> <td> model </td> <td> computer </td> </tr>
+		</table>
+		Page <input size="2" id="page6" style="botom"> </input>
+		<button id='partTableNext' name='1'; class='next'> Go </button>
+	</form>
+
+	<form id="formUpdatePart" style="display:none; margin-left:21px; float: left">
+		Serial number: <input type="text"  id="upartSerialNumber"/ >
+		Hardware part device warranty: <input type="date"  id="upartWarranty"/ >
+		Model: <select id = "upartModel"> </select>
+		Network: <select id = "upartComputer"> </select>
+		<button id="bupart">Save</button>
+	</form>
+
+	<form id="formSearch" style="display:none">
+		Search : <br>
+		Choose computer host name:
+		<select form="search" id = "search">
+		</select>
+		<button id="bsearch">Search</button>
+		<br><br>
+		<div id="searchTableDiv">
+			Hardware parts: <br/>
+			<table class="tables" id="searchTable" border="1">
+				<tr bgcolor="#AA00FF"> <td>serial number </td><td> model </td> <td> type</td> <td>warranty</td></tr>
+			</table>
+		</div>
+	</form>
+	</div>
+
+	<script src="comp.js"></script>
+</body>
+</html>

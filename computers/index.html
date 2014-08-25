@@ -1,0 +1,49 @@
+<html>
+<head> 
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+	<div id="loginPage">
+	<form>
+		Username: <input type="text"  id="username" value="gosho"/ > <br>
+		Password: <input type="password"  id="password" value="parola"/ >
+		<button id="login">Log in</button>
+		<br><br>
+	</form>
+	</div>
+	<a href="/registration.html">Registration</a>
+
+	<script language="javascript">
+
+	$("#login").click(function(){
+		var username = $("#username").val();
+		var password = $("#password").val();
+
+		login(username, password);
+		return false;
+	});
+
+	function login(username, password)
+	{
+		$.ajax({
+			type: 'POST',
+			url: 'login.pl',
+			data: { "username" : username , "password" : password},
+			success : function(response) {
+				if (response==1)
+				{
+					window.open ('computers.html','_self',false);
+				}
+				else
+				{
+					alert("Wrong username or password");
+				}
+			}
+		});
+	}
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<html>
+<head> 
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+	<form>
+		Username: <input type="text"  id="username"/ > <br>
+		Password: <input type="password"  id="password1" / >
+		Confirm Password: <input type="password"  id="password2"/ >
+		<button id="registrate">Registrate</button>
+		<br><br>
+	</form>
+
+	<script language="javascript">
+
+	$("#registrate").click(function(){
+		var username = $("#username").val();
+		var password1 = $("#password1").val();
+		var password2 = $("#password2").val();
+
+		if(password1!=password2)
+		{
+			alert("passwords are not the same");
+			return false;
+		}
+
+		registrate(username, password1);
+		return false;
+	});
+
+	function registrate(username, password)
+	{
+		$.ajax({
+			type: 'POST',
+			url: 'registrate.pl',
+			data: { "username" : username , "password" : password},
+			success : function(response) {
+				if (response==1)
+				{
+					alert("This username is taken. Choose another one");
+				}
+				else if (response == 2)
+				{
+					alert("Your registration is successFull");
+				}
+			}
+		});
+	}
+	</script>
+
+</body>
+</html>
