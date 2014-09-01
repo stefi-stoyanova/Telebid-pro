@@ -39,16 +39,7 @@ foreach my $i (@square)
 	{
 		if($k ne 0 && !($k eq ' '))
 		{
-			my $exists = 0;
-			foreach my $a (@symbols)
-			{
-				if ($a eq $k)
-				{
-					$exists=1;
-				}
-			}
-
-			if($exists==0)
+			if(! &exists($k, @symbols))
 			{
 				push (@symbols, $k);
 			}
@@ -87,16 +78,7 @@ while(1)
 					}
 					if ($square[$ii][$k] ne '0')
 					{
-						my $exists = 0;
-						foreach my $a (@currSymb)
-						{
-							if ($a eq $square[$ii][$k])
-							{
-								$exists=1;
-							}
-						}
-
-						if($exists==0)
+						if(! &exists($square[$ii][$k], @currSymb))
 						{
 							push (@currSymb, $square[$ii][$k]);
 						}
@@ -115,16 +97,7 @@ while(1)
 					}
 					if ($square[$i][$kk] ne '0')
 					{
-						my $exists = 0;
-						foreach my $a (@currSymb)
-						{
-							if ($a eq $square[$i][$kk])
-							{
-								$exists=1;
-							}
-						}
-
-						if($exists==0)
+						if(! &exists($square[$i][$kk], @currSymb))
 						{
 							push (@currSymb, $square[$i][$kk]);
 						}
@@ -146,16 +119,7 @@ while(1)
 						}
 						if ($square[$iii][$kkk] ne '0')
 						{
-							my $exists = 0;
-							foreach my $a (@currSymb)
-							{
-								if ($a eq $square[$iii][$kkk])
-								{
-									$exists=1;
-								}
-							}
-
-							if($exists==0)
+							if(! &exists($square[$iii][$kkk], @currSymb))
 							{
 								push (@currSymb, $square[$iii][$kkk]);
 							}
@@ -168,16 +132,7 @@ while(1)
 				{
 					foreach my $a (@symbols)
 					{	
-						my $exists = 0;
-						foreach my $b (@currSymb)
-						{
-							if ($a eq $b)
-							{
-								$exists=1;
-							}
-							
-						}
-						if($exists==0)
+						if(! &exists($a, @currSymb))
 						{
 							$square[$i][$k] = $a;
 							last;
@@ -197,3 +152,20 @@ while(1)
 
 print Dumper \@square;
 
+
+
+sub exists
+{
+	my ($element, @array) = @_;
+	my $exists = 0;
+	foreach my $k (@array)
+	{
+		if ($element eq $k)
+		{
+			return 1;
+		}
+	}
+
+	return 0;
+
+}
