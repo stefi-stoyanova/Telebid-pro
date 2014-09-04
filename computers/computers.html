@@ -2,178 +2,302 @@
 <head> 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"> </script>
+	<script src="/src/jquery.i18n.js"></script>
+	<script src="/src/jquery.i18n.messagestore.js"></script>
+	<script src="/src/jquery.i18n.fallbacks.js"></script>
+	<script src="/src/jquery.i18n.parser.js"></script>
+	<script src="/src/jquery.i18n.emitter.js"></script>
+	<script src="/src/jquery.i18n.language.js"></script>
+
+
+	<script>
+		function getCookie(cname) {
+		    var name = cname + "=";
+		    var ca = document.cookie.split(';');
+		    for(var i=0; i<ca.length; i++) {
+		        var c = ca[i];
+		        while (c.charAt(0)==' ') c = c.substring(1);
+		        if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+		    }
+		    return "";
+		}
+
+		function checkCookie(cname) {
+		    var user = getCookie(cname);
+		    if (user != "") {
+
+		    } else {
+		    	alert("you are not logged in");
+		    	window.open ('index.html','_self',false);
+		    }
+		}
+
+		checkCookie("loggedin");
+	</script>
 
 </head>
 <body>
 
 
 	<div id="menu">
-		<button id="mType">Types</button>
-		<button id="mModel">Models</button>
-		<button id="mNetwork">Networks</button>
-		<button id="mComputer">Computers</button>
-		<button id="mDevice">Network devices</button>
-		<button id="mPart">Hardware parts</button>           
-		<button id="mSearch">Search</button>
-		<br>
-		<br>
+		<button id="mType"></button>
+		<button id="mModel"></button>
+		<button id="mNetwork"></button>
+		<button id="mComputer"></button>
+		<button id="mDevice"></button>
+		<button id="mPart"></button>           
+		<button id="mSearch"></button>
+
+
+		<button id="logout" style ="float:right" >Log out</button>
+		<button id="profile" style ="float:right;"> Profile </button>
+		<select id="language" style ="float:right">
+			 <option value="en">en</option>
+			 <option value="bg">bg</option>
+		</select>
+		<br><br><br><br>
+	</div>
+	<div id="userInfo" style="display:none">
+		<span id="username"> </span> <br><br><br>
+		<!-- <button id="changePassword"> 
+		Change password</button> -->
 	</div>
 
 	<div id="computersPage">
 
 
-	<form id="formType" style="display:none">
-		Type: <input type="text"  id="type"/ >
-		<button id="btype">Save</button>
-		
+	<form id="formType" style="display:none; float:left">
+		<div class='add'></div><br>
+		<input type="text" value="Type" id="type" class="type"/ >
+		<button id="btype" class="write save">Save</button><br><br>
 
-		
-		<input type="text"  id="typeSearch"/ >
-		<button class ='search'>Search</button>
-		<br><br>
+		<input type="text" value="Search" class="searchTableText"/ >
+		<button class="searchTable">Search</button><br><br>
 
-		<table class="tables" name="types" id="typeTable" border="1" style="float:left" width="200px">
-			<thead><tr bgcolor="AA00FF"> <td> type </td></tr></thead>
+		<input min="1" style="display:none" class="page" type="number" value="1"/> <br>
+		<table class="tables" style="display:none" name="types" id="typeTable" border="1" style="float:left" width="200px">
 		</table>
-		Page <input size="2" id="page1" style="botom"> </input>
-		<button id='typeTableNext' name='1'; class='next'> Go </button>
-		
-
 		
 	</form>
 
 	<form id="formUpdateType" style="display:none; margin-left:21px; float: left">
-		Update type: <input type="text"  id="utype"/ >
-		<button id="butype">Save</button>
+		<div class='update'></div> <br> 
+		<input type="text" value="type" id="utype" class="type"/ >
+		<button id="butype" class="write save" >Save</button>
 		<br><br>
 	</form>
 
 
-	<form id="formModel" style="display:none">
-		Model: <input type="text"  id="model"/ >
-		Model Type: <select form="modelType" id = "modelType"></select>
-		<button id="bmodel">Save</button>
+	<form id="formModel" style="display:none; float:left">
+		<div class='add'></div> <br>
+		<input type="text" value="Model" id="model" class="model" />
+
+		<div class="selectSearch"> 
+			<input type="text" value="Type" class = "searchedText type"/>
+			<button class="search"> Search </button> <br>
+			<select class="select" id="smt" name="getTypes" style="display: none" size='5'></select>
+		</div>
+
+		<button id="bmodel" class="write save">Save</button>
 		<br><br>
 
-		<table class="tables" id="modelTable" name="models" style="float: left" border="1">
-			<tr bgcolor="AA00FF"> <td> model </td><td> type </td> </tr>
+		<input type="text" value="Search" class="searchTableText"/ >
+		<button class="searchTable">Search</button><br><br>
+
+		<input min="1" style="display:none" class="page" type="number" value="1"/> 
+		<br>
+		<table class="tables"  style="display:none" id="modelTable" name="models" style="float: left" border="1">
 		</table>
-		Page <input size="2" id="page2" style="botom"> </input>
-		<button id='modelTableNext' name='1'; class='next'> Go </button>
+		
 	</form>
 
 	<form id="formUpdateModel" style="display:none; margin-left:21px; float: left">
-		Update model: <input type="text"  id="umodel"/ >
-		Model Type: <select id = "umodelType"></select>
-		<button id="bumodel">Save</button>
+		<div class='update'></div> <br> 
+		<input type="text" value="Model" class="model" id="umodel"/ >
+		
+		<div class="selectSearch"> 
+			<input type="text" value="Choose type" class="searchedText type"/>
+			<button class="search"> Search </button> <br>
+			<select class="select" id="usmt" name="getTypes" style="display: none" size='5'></select>
+		</div>
+		
+		<button id="bumodel" class="write save">Save</button>
 		<br><br>
 	</form>
 
 	<form id="formNetwork" style="display:none">
-		Update network: <input type="text"  id="network"/ >
-		<button id="bnetwork">Save</button>
+		<div class='add'></div><br>
+		<input type="text" value="Network" class="network1" id="network"/ >
+		<button id="bnetwork" class="write save">Save</button>
 		<br><br>
 
-		<table class="tables" id="networkTable" name="networks" style="float: left" border="1">
-			<tr bgcolor="AA00FF"> <td> network </td> </tr>
-		</table>
-		Page <input size="2" id="page3" style="botom"> </input>
-		<button id='networkTableNext' name='1'; class='next'> Go </button>
+		<input type="text" value="Search" class="searchTableText"/ >
+		<button class="searchTable">Search</button><br><br>
+
+		<input min="1" style="display:none" class="page" type="number" value="1"/> <br>
+		<table class="tables"  style="display:none" id="networkTable" name="networks" style="float: left" border="1">
+		</table>	
 	</form>
 
 	<form id="formUpdateNetwork" style="display:none; margin-left:21px; float: left">
-		Update type: <input type="text"  id="unetwork"/ >
-		<button id="bunetwork">Save</button>
+		<div class='update'></div> <br> 
+		<input type="text" value="Network" class="network1" id="unetwork"/ >
+		<button id="bunetwork" class="write save">Save</button>
 		<br><br>
 	</form>
 
-	<form id="formComputer" style="display:none">
-		Computer: <input type="text"  id="computer"/ >
-		Computer network: <select form="computerNetwork" id = "computerNetwork">
-		</select>
-		<button id="bcomputer">Save</button>
+	<form id="formComputer" style="display:none; float:left">
+		<div class='add'></div><br>
+
+		<input type="text" value="Computer name" class="computer" id="computer"/ > <br>
+		
+		<div class="selectSearch"> 
+		<input value="Choose network" class ="searchedText network1"/>
+		<button class="search">Search</button> <br>
+		<select class="select" name="getNetworks" id="scn" style="display: none" size='5'></select>
+		</div>
+
+		<button id="bcomputer" class="write save">Save</button>
 		<br><br>
 
-		<table class="tables" id="computerTable" name="computers" style="float: left" border="1">
-			<tr bgcolor="AA00FF"> <td> host name </td> <td> network </td> </tr>
+		<input type="text" value="Search" class="searchTableText"/ >
+		<button class="searchTable">Search</button><br><br>
+
+		<input min="1" style="display:none" class="page" type="number" value="1"/> <br>
+		<table class="tables"  style="display:none" id="computerTable" name="computers" style="float: left" border="1">
 		</table>
-		Page <input size="2" id="page4" style="botom"> </input>
-		<button id='computerTableNext' name='1'; class='next'> Go </button>
+		
 	</form>
 
 	<form id="formUpdateComputer" style="display:none; margin-left:21px; float: left">
-		Update model: <input type="text"  id="ucomputer"/ >
-		Model Type: <select id = "ucomputerNetwork"></select>
-		<button id="bucomputer">Save</button>
+		<div class='update'></div> <br> 
+		<input type="text" value="Computer name" class="computer" id="ucomputer"/ >
+		
+		<div class="selectSearch">
+		<input class = "searchedText network1" value="Choose network"/>
+		<button class="search">Search</button> <br>
+		<select class="select" id="uscn" name="getNetworks" style="display: none" size='5'></select>
+		</div>
+
+		<button id="bucomputer" class="write save">Save</button>
 		<br><br>
 	</form>
 
-	<form id="formDevice" style="display:none">
-		Serial number: <input type="text"  id="deviceSerialNumber"/ >
-		Network device warranty: <input type="date"  id="deviceWarranty"/ >
-		Model: <select form="deviceModel" id = "deviceModel">
-		</select>
-		Network: <select form="deviceNetwork" id = "deviceNetwork">
-		</select>
-		<button id="bdevice">Save</button>
+
+	<form id="formDevice" style="display:none; float:left">
+		<div class='add'></div><br>
+		<input type="text" value="Serial number" class="serialnumber" id="deviceSerialNumber"/ > 
+		<div class='warranty'></div> <input type="date" id="deviceWarranty"/ >
+		
+		<div class="selectSearch"> 
+		<input type="text" value="Choose model" id="deviceModel" class = "searchedText model"/>
+		<button class="search"> Serach </button><br>
+		<select class="select" id="sdm" name="getModels" style="display: none" size='5'></select>
+		</div>
+		
+		<div class="selectSearch"> 
+		<input type="text" value="Choose network" id="deviceNetwork" class = "searchedText network1"/>
+		<button class="search"> Serach </button> <br>
+		<select class="select" id="sdn" name="getNetworks" style="display: none" size='5'></select>
+		</div>
+
+		<button id="bdevice" class="write save">Save</button>
 		<br><br>
 
-		<table class="tables" id="devicesTable" name="network_devices" style="float: left" border="1">
-			<tr bgcolor="AA00FF"> <td> serial_number</td> <td> warranty </td> <td> model </td> <td> network </td> </tr>
+		<input type="text" value="Search" class="searchTableText"/ >
+		<button class="searchTable">Search</button><br><br>
+
+		<input min="1" style="display:none;" class="page" type="number" value="1"/> <br>
+		<table class="tables"  style="display:none" id="devicesTable" name="network_devices" style="float: left" border="1">
 		</table>
-		Page <input size="2" id="page5" style="botom"> </input>
-		<button id='deviceTableNext' name='1'; class='next'> Go </button>
+		
 	</form>
 
 	<form id="formUpdateDevice" style="display:none; margin-left:21px; float: left">
-		Serial number: <input type="text"  id="udeviceSerialNumber"/ >
-		Network device warranty: <input type="date"  id="udeviceWarranty"/ >
-		Model: <select id = "udeviceModel"> </select>
-		Network: <select id = "udeviceNetwork"> </select>
-		<button id="budevice">Save</button>
+		<div class='update'></div> <br>
+		<input type="text" value="Serial number" class="serialnumber" id="udeviceSerialNumber"/ >
+		<div class='warranty'></div> <input type="date"  id="udeviceWarranty"/ >
+		
+		<div class="selectSearch"> 
+		<input value="Choose model"  id="udeviceModel" class = "searchedText model"/> 
+		<button class="search"> Search </button> <br>
+		<select class="select" name="getModels" id="usdm" style="display: none" size='5'></select>
+		</div>
+		
+		<div class="selectSearch"> 
+		<input value="Choose network" id="udeviceNetwork" class = "searchedText network1"/>
+		<button class="search"> Search </button> <br>
+		<select class="select"  name="getNetworks" id="usdn "style="display: none" size='5'></select>
+		</div>
+		
+		<button id="budevice" class="write save">Save</button>
 	</form>
 
-	<form id="formPart" style="display:none"> 
-		Serial number: <input type="text"  id="partSerialNumber"/ >
-		Hardware part warranty: <input type="date"  id="partWarranty"/ >
-		Model: <select form="partModel" id = "partModel">
-		</select>
-		Computer: <select form="partComputer" id = "partComputer">
-		</select>
-		<button id="bpart">Save</button>
+	<form id="formPart" style="display:none; float:left"> 
+		<div class='add'></div> <br>
+		<input type="text" value="Serial number" class="serialnumber" id="partSerialNumber"/ >
+		<div class='warranty'></div>
+		<input type="date"  id="partWarranty"/ >
+		
+		<div class="selectSearch"> 
+		<input type="text" value="Choose model" id="partModel" class ="searchedText model"/>
+		<button class="search"> Search </button> <br>
+		<select class="select" id="spm" name="getModels" style="display: none" size='5'></select>
+		</div>
+		
+		<div class="selectSearch"> 
+		<input type="text" value="Choose computer" id="partComputer" class = "searchedText computer"/>
+		<button class="search"> Search </button> <br>
+		<select class="select" id="spc" name="getComputers" style="display: none" size='5'></select>
+		</div>
+
+		<button id="bpart" class="write save">Save</button>
 		<br><br>
 
-		<table id="partsTable" name="hardware_parts" style="float: left" border="1">
-			<tr bgcolor="AA00FF"><td> serial_number</td> <td> warranty </td> <td> model </td> <td> computer </td> </tr>
+		<input type="text" value="Search" class="searchTableText"/ >
+		<button class="searchTable">Search</button><br><br>
+
+		<input min="1" class="page" style="display:none" type="number" value="1"/> <br>
+		<table class="tables" id="partsTable"  style="display:none" name="hardware_parts" style="float: left" border="1">
 		</table>
-		Page <input size="2" id="page6" style="botom"> </input>
-		<button id='partTableNext' name='1'; class='next'> Go </button>
 	</form>
 
 	<form id="formUpdatePart" style="display:none; margin-left:21px; float: left">
-		Serial number: <input type="text"  id="upartSerialNumber"/ >
-		Hardware part device warranty: <input type="date"  id="upartWarranty"/ >
-		Model: <select id = "upartModel"> </select>
-		Network: <select id = "upartComputer"> </select>
-		<button id="bupart">Save</button>
+		<div class='update'></div> <br>
+		<input type="text" value="Serial number" class="serialnumber" id="upartSerialNumber"/ >
+		<div class='warranty'></div>
+		 <input type="date"  id="upartWarranty"/ >
+		
+		<div class="selectSearch"> 
+		<input type="text" value = "Choose model" id="upartModel" class = "searchedText model" /> 
+		<button class="search"> Search </button> <br>
+		<select class="select" id="uspm" name="getModels" style="display: none" size='5'></select>
+		</div>
+		
+		<div class="selectSearch"> 
+		<input value="Choose computer" id="upartComputer" class = "searchedText computer"/>
+		<button class="search"> Search </button> <br>
+		<select class="select" id="" name="getComputers" style="display: none" size='5'></select>
+		</div>
+
+		<button id="bupart" class="write save">Save</button>
 	</form>
 
-	<form id="formSearch" style="display:none">
+	<!-- <form id="formSearch" style="display:none">
 		Search : <br>
 		Choose computer host name:
-		<select form="search" id = "search">
+		<select id = "search1">
 		</select>
 		<button id="bsearch">Search</button>
 		<br><br>
 		<div id="searchTableDiv">
 			Hardware parts: <br/>
 			<table class="tables" id="searchTable" border="1">
-				<tr bgcolor="#AA00FF"> <td>serial number </td><td> model </td> <td> type</td> <td>warranty</td></tr>
 			</table>
 		</div>
-	</form>
+	</form> -->
 	</div>
 
-	<script src="comp.js"></script>
+	<script src="comp.js"  charset="UTF-8"></script>
 </body>
 </html>

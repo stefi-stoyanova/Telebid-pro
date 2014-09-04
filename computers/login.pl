@@ -2,6 +2,8 @@
 use CGI;
 use DBI;
 use warnings;
+use Crypt::PBKDF2;
+
 
 
 print "Content-type: text/html\n\n";
@@ -14,13 +16,18 @@ my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 })or die $DBI
 
 
 my $q = CGI->new;
+
 my $username = $q->param('username');
-my $password = $q->param('password');
+my $pass = $q->param('password');
 
 
-my $sth = $dbh->prepare("SELECT count(*) FROM users WHERE username = '$username' AND password = '$password'") or return undef;
-$sth->execute() or die "DBI::errstr";
-my $isUser = $sth->fetchrow_array();
+my $sth = $dbh->prepare("SELECT password FROM users WHERE username = ? ") or return undef;
+$sth->execute($username) or die "DBI::errstr";
+my $hash = $sth->fetchrow_array();
+
+
+my $pbkdf2 = Crypt::PBKDF2->new(hash_class => 'HMACSHA2');
+my $isUser = $pbkdf2->validate($hash, $pass);
 
 if ($isUser)
 {

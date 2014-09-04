@@ -7,7 +7,8 @@
 
 	<form>
 		Username: <input type="text"  id="username"/ > <br>
-		Password: <input type="password"  id="password1" / >
+		Email: <input type="email"  maxlength="64" id="email"/ > <br>
+		Password: <input type="password"  id="password1" / > <br>
 		Confirm Password: <input type="password"  id="password2"/ >
 		<button id="registrate">Registrate</button>
 		<br><br>
@@ -19,6 +20,8 @@
 		var username = $("#username").val();
 		var password1 = $("#password1").val();
 		var password2 = $("#password2").val();
+		var email = $('#email').val();
+		
 
 		if(password1!=password2)
 		{
@@ -26,16 +29,16 @@
 			return false;
 		}
 
-		registrate(username, password1);
+		registrate(username, password1, email);
 		return false;
 	});
 
-	function registrate(username, password)
+	function registrate(username, password, email)
 	{
 		$.ajax({
 			type: 'POST',
 			url: 'registrate.pl',
-			data: { "username" : username , "password" : password},
+			data: { "username" : username , "password" : password, "email" : email},
 			success : function(response) {
 				if (response==1)
 				{
@@ -43,7 +46,18 @@
 				}
 				else if (response == 2)
 				{
-					alert("Your registration is successFull");
+					alert("Your registration is successfull.");
+					window.open ('index.html','_self',false);
+				}
+				else if (response == 3)
+				{
+					alert("This email is alredy taken.");
+					
+				}
+				else if (response == 4)
+				{
+					alert("This email is not valid.");
+					
 				}
 			}
 		});

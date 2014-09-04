@@ -32,16 +32,23 @@
 			url: 'login.pl',
 			data: { "username" : username , "password" : password},
 			success : function(response) {
-				if (response==1)
-				{
-					window.open ('computers.html','_self',false);
-				}
-				else
+				if (response==0)
 				{
 					alert("Wrong username or password");
 				}
+				else
+				{
+					setCookie("loggedin", username, 1);
+					window.open ('computers.html','_self',false);
+				}
 			}
 		});
+	}
+	function setCookie(cname, cvalue, exdays) {
+	    var d = new Date();
+	    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	    var expires = "expires="+d.toUTCString();
+	    document.cookie = cname + "=" + cvalue + "; " + expires;
 	}
 	</script>
 
