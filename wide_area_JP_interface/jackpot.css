@@ -1,0 +1,71 @@
+
+
+.toolbar {
+    margin: -0.5em -0.5em 0 -0.5em;
+    background-color: #00006E;
+    padding: 0.6em;
+    text-align: center;
+    color: white;
+}
+
+.toolbarText{
+    line-height: 2em; 
+    vertical-align: middle; 
+}
+
+.toolbarButton {
+    float: right;  
+    height: 2em;
+    vertical-align: middle;
+}
+
+.inline-block {
+    display: inline-block;
+    margin: 0.2em;
+}
+
+
+.inline-block span.dijitReset.dijitInline.dijitButtonNode
+{
+    /*background-color: #0080F0;*/
+}
+
+.notActive span.dijitReset.dijitInline.dijitButtonNode
+{
+    background-color: #CCCCCC;
+}
+
+
+.systemHeader {
+    border: solid black 1px; 
+    border-collapse: collapse; 
+    margin-top: 30px; 
+    background-color: #2200BB; 
+    color: #FFFFFF; 
+    height: 2em;
+}
+
+.systemHeaderName {
+    width: 100%; 
+    padding-left: 5px; 
+    line-height: 2em; 
+    vertical-align: middle;
+}
+
+.systemHeaderButton {
+    float: right;
+
+}
+
+.levelsContainer {
+    border: 2px solid #2200BB;
+    border-top: 0px;
+    min-height: 2em;
+}
+
+.space {
+    border-collapse:separate; 
+    border-spacing: 0.5em;
+}
+
+
