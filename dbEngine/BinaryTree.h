@@ -13,7 +13,7 @@ struct Node
 	Node* left;
 	Node* right;
 	int data;
-	long adress;
+	long address;
 
 	void write(FILE* file);
 	void read(FILE* file);
@@ -25,25 +25,29 @@ void Node::write(FILE* file)
 	if(exists)
 	{
 		fwrite(&data, sizeof(data), 1, file);
-		fwrite(&adress, sizeof(adress), 1, file);
+		fwrite(&address, sizeof(address), 1, file);
 	}
 	else
 	{
-		fseek(file, sizeof(data) + sizeof(adress), SEEK_CUR);
+		fseek(file, sizeof(data) + sizeof(address), SEEK_CUR);
 	}
 }
 
 void Node::read(FILE* file)
 {
 	fread(&exists, sizeof(exists), 1, file);
+	if( feof(file) )
+    { 
+        return;
+    }
 	if(exists)
 	{
 		fread(&data, sizeof(data), 1, file);
-		fread(&adress, sizeof(adress), 1, file);
+		fread(&address, sizeof(address), 1, file);
 	}
 	else
 	{
-		fseek(file, sizeof(data) + sizeof(adress), SEEK_CUR);
+		fseek(file, sizeof(data) + sizeof(address), SEEK_CUR);
 	}
 }
 
@@ -60,14 +64,16 @@ public:
 	~BinaryTree();
 	void print() const;
 
-	void addValue(int data, long adress);
+	void addValue(int data, long address);
 
 	void write(FILE* file);
+	void search(FILE* file, int value);
+
 
 private:
 	void deleteRecursive(Node* node);
 	void printRecursive(Node*, int) const;
-	void addRecursive(Node* node, int data, long adress);
+	void addRecursive(Node* node, int data, long address);
 
 };
 
@@ -105,8 +111,7 @@ void BinaryTree::write(FILE* file)
 		{
 			--nodesToWrite;
 		}
-		cout << nodesToWrite << endl;
-		cout << curr->data << endl;
+
 		q.pop();
 
 		curr->write(file);
@@ -126,58 +131,96 @@ void BinaryTree::write(FILE* file)
 	} 
 }
 
-void BinaryTree::addValue(int data, long adress)
+// TODO make it work 
+void BinaryTree::search(FILE* file, int value)
+{
+	fseek(file, 0, SEEK_SET);
+	Node curr;
+	int pos = 0;
+	while(true)
+	{
+
+		curr.read(file);
+		if( feof(file) )
+	    { 
+	        break;
+	    }
+		if(curr.exists)
+		{
+			cout << "READED: " << curr.data << ": " << curr.address << endl;
+
+			if(curr.data == value)
+			{
+				cout << curr.data << ": " << curr.address << endl;
+			}
+			else if (curr.data > value)
+			{
+				fseek(file, (2 * pos) + 1, SEEK_SET);
+			}
+			else
+			{
+				fseek(file, (2 * pos) + 2, SEEK_SET);
+			}
+		}
+		else
+		{
+			break;
+		}
+
+		pos++;
+	}
+}
+
+
+void BinaryTree::addValue(int data, long address)
 {
 	if(!root)
 	{
 		root = new Node();
 		root->data = data;
-		root->adress = adress;
+		root->address = address;
 		++existingNodes;
-		cout << "first" << endl;
-		root->exists = true;
+ 			root->exists = true;
 		return;
 	}
 
-	addRecursive(root, data, adress);
+	addRecursive(root, data, address);
 }
 
 
-void BinaryTree::addRecursive(Node* node, int data, long adress)
+void BinaryTree::addRecursive(Node* node, int data, long address)
 {
 	if(data <= node->data)
 	{
 		if(node->left)
 		{
-			addRecursive(node->left, data, adress);
+			addRecursive(node->left, data, address);
 		}
 		else
 		{
 			Node* newNode = new Node();
 			newNode->data = data;
-			newNode->adress = adress;
+			newNode->address = address;
+			newNode->exists = true;
 
 			node->left = newNode;
 			existingNodes++;
-			cout << "second" << endl;
-			node->exists = true;
 		}
 	}
 	else
 	{
 		if(node->right)
 		{
-			addRecursive(node->right, data, adress);
+			addRecursive(node->right, data, address);
 		}
 		else
 		{
 			Node* newNode = new Node();
 			newNode->data = data;
-			newNode->adress = adress;
+			newNode->address = address;
+			newNode->exists = true;
 
 			node->right = newNode;
-			cout << "third" << endl;
-			node->exists = true;
 			existingNodes++;
 		}	
 	}
