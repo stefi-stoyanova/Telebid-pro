@@ -9,6 +9,7 @@
 #include <cstring>
 
 #include "Column.h"
+#include "BinaryTree.h"
 
 using namespace std;
 
@@ -22,10 +23,12 @@ public:
 	Table(const char* fileName);
 	~Table();
 
+	void createTable(string tableName); 
+
 	void writeColumnsInFile();
 	void readColumnsInFile();
 
-	void addColumn(string& name, int type);
+	void addColumn(string& name, int type, bool hasIndex = false);
 	void insertLine(vector<pair<string,string> >& values);
 	void updateLine(vector<pair<string,string> >& values, const char* name, const char* value);
 
@@ -48,14 +51,27 @@ Table::Table(const char* fileName)
 	file = fopen(fileName, "r+");
 	if(!file)
 	{
+		file = fopen(fileName, "w");
+		fclose(file);
+	}
+	
+	file = fopen(fileName, "r+");
+	if(!file)
+	{
 		throw "File not open!";
 	}
-	//setbuf(file, NULL);
 }
 
-void Table::addColumn(string& name, int type)
+
+
+void Table::addColumn(string& name, int type, bool hasIndex)
 {
-	columns.push_back(new Column(name, type));
+	if(hasIndex)
+	{
+		FILE* indexFile = fopen((name + ".dat").c_str(), "w");
+		fclose(indexFile);
+	}
+	columns.push_back(new Column(name, type, hasIndex));
 }
 
 
@@ -100,11 +116,18 @@ void Table::readColumnsInFile()
 		fread(buffer, 1, nameLength,  file);
 
 		c->name = string(buffer);
+		FILE* indexFile = fopen((c->name + ".dat").c_str(), "r");
+		if(indexFile)
+		{
+			c->hasIndex = true;
+			cout << "hasIndex TRUE: " << c->hasIndex << endl;
+		}
 		//cout << nameLength << endl;
 		//cout << c->name << endl;
 		columns.push_back(c);
 		fseek(file, COLUMN_NAME_SIZE - nameLength, SEEK_CUR);
 		delete []buffer;
+		//delete c;
 	}
 	fread(&lines, sizeof(lines), 1, file);
 }
@@ -131,6 +154,7 @@ void Table::insertLine(vector<pair<string,string> >& values)
 
 	fseek(file, 0, SEEK_END);
 	fwrite("1", 1, 1, file);
+	long linePosition = ftell(file);
 	for(int i = 0; i < columns.size(); i++)
 	{
 		int k = 0;
@@ -150,6 +174,20 @@ void Table::insertLine(vector<pair<string,string> >& values)
 		{
 			int value = atoi(values[k].second.c_str());
 			fwrite(&value, sizeof(value), 1, file);
+
+			cout << "INDEX insert: " << columns[i]->hasIndex << endl;
+			if(columns[i]->hasIndex)
+			{
+				cout << "COLUMN " << columns[i]->name << " has index" << endl;
+				FILE* fileIndex = fopen((columns[i]->name + ".dat").c_str(), "r+");
+		    	if(!fileIndex)
+		    	{
+		    		throw "File not open!";
+		    	}
+		    	BinaryTree b; 
+		    	b.addNode(fileIndex, value, linePosition);
+		    	fclose(fileIndex);
+			}
 		} 
 		else if( columns[i]->type == STRING_TYPE)
 		{
@@ -182,7 +220,7 @@ void Table::readAllLines()
 				{
 					int value = -1;
 					fread(& value, sizeof(value), 1, file);
-					//cout << columns[k]->name << ": " << value << endl;
+					cout << columns[k]->name << ": " << value << endl;
 				} 
 				else if(columns[k]->type == STRING_TYPE)
 				{
@@ -190,12 +228,12 @@ void Table::readAllLines()
 					fread(& length, sizeof(length),1, file);
 					char* buffer = new char[length];
 					fread(buffer, sizeof(char), length, file);
-					/*cout << columns[k]->name << ": " ;
+					cout << columns[k]->name << ": " ;
 					for(int i = 0; i < length; i++)
 					{
 						cout << buffer[i];
 					}
-					cout << endl;*/
+					cout << endl;
 					delete[] buffer;
 				}
 			}
@@ -333,6 +371,19 @@ int Table::deleteLine(const char* name, const char* value)
 				{
 					if(columns[k]->type == INT_TYPE)
 					{
+						if(columns[i]->hasIndex)
+						{
+							cout << "COLUMN " << columns[i]->name << " has index" << endl;
+							FILE* fileIndex = fopen((columns[i]->name + ".dat").c_str(), "r+");
+					    	if(!fileIndex)
+					    	{
+					    		throw "File not open!";
+					    	}
+					    	BinaryTree b; 
+					    	b.deleteNode(fileIndex, value, linePos);
+					    	fclose(fileIndex);
+						}
+
 						int val = -1;
 						fread(& val, sizeof(val), 1, file);
 						if(val == atoi(value))

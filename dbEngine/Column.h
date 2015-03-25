@@ -14,10 +14,11 @@ class Column
 
 public:
 	int type;
-	string name;	
+	string name;
+    bool hasIndex; 	
 
-    Column(): name(""), type(-1){};
-	Column(string colName, int colType) : name(colName), type(colType) {}
+    Column(): name(""), type(-1), hasIndex(false) {};
+	Column(string colName, int colType, bool index) : name(colName), type(colType), hasIndex(index) {}
 };
 
 #endif

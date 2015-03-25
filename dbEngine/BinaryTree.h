@@ -65,15 +65,21 @@ public:
 	void print() const;
 
 	void addValue(int data, long address);
-
 	void write(FILE* file);
-	void search(FILE* file, int value);
+	void readAll(FILE* file);
+	
+	long search(FILE* file, int value);
+	void addNode(FILE* file, int data, long address);
+	void deleteNode(FILE* file, int data, long address);
+	void updateNode(FILE* file, int data, long oldAddress, long newAddress);
+
 
 
 private:
 	void deleteRecursive(Node* node);
 	void printRecursive(Node*, int) const;
 	void addRecursive(Node* node, int data, long address);
+	int getPosition(int index);
 
 };
 
@@ -131,15 +137,155 @@ void BinaryTree::write(FILE* file)
 	} 
 }
 
-// TODO make it work 
-void BinaryTree::search(FILE* file, int value)
+
+int BinaryTree::getPosition(int index)
 {
-	fseek(file, 0, SEEK_SET);
+	return (sizeof(long) + sizeof(int) + sizeof(bool)) * index; 
+}
+
+
+void BinaryTree::updateNode(FILE* file, int data, long oldAddress, long newAddress)
+{
+	int idx = 0;
+	
 	Node curr;
-	int pos = 0;
 	while(true)
 	{
+		fseek(file, getPosition(idx), SEEK_SET);
+		
+		curr.read(file);
+		if( feof(file) )
+	    { 
+			break;
+	    }
+		if(curr.exists)
+		{
+			cout << "READED: " << curr.exists << ": " << curr.data << ": " << curr.address << endl;
 
+			if(curr.data == data && curr.address == oldAddress)
+			{
+				fseek(file, getPosition(idx), SEEK_SET);
+				curr.address = newAddress;
+				curr.write(file);
+				break;
+			}
+
+			if (curr.data >= data)
+			{
+				idx = (2 * idx) + 1;
+			}
+			else
+			{
+				idx = (2 * idx) + 2;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}	
+}
+
+
+
+void BinaryTree::deleteNode(FILE* file, int data, long address)
+{
+	int idx = 0;
+	
+	Node curr;
+	while(true)
+	{
+		fseek(file, getPosition(idx), SEEK_SET);
+		
+		curr.read(file);
+		if( feof(file) )
+	    { 
+			break;
+	    }
+		if(curr.exists)
+		{
+			cout << "READED: " << curr.exists << ": " << curr.data << ": " << curr.address << endl;
+
+			if(curr.data == data && curr.address == address)
+			{
+				fseek(file, getPosition(idx), SEEK_SET);
+				curr.exists = false;
+				curr.write(file);
+				break;
+			}
+
+			if (curr.data >= data)
+			{
+				idx = (2 * idx) + 1;
+			}
+			else
+			{
+				idx = (2 * idx) + 2;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}	
+}
+
+
+void BinaryTree::addNode(FILE* file, int data, long address)
+{
+	int idx = 0;
+	
+	Node curr;
+	while(true)
+	{
+		fseek(file, getPosition(idx), SEEK_SET);
+		
+		curr.read(file);
+		if( feof(file) )
+	    { 
+	        clearerr(file);
+	        fseek(file, getPosition(idx), SEEK_SET);
+			curr.data = data;
+			curr.address = address;
+			curr.exists = true;
+			curr.write(file);
+			break;
+	    }
+		if(curr.exists)
+		{
+			//cout << "READED: " << curr.exists << ": " << curr.data << ": " << curr.address << endl;
+
+			if (curr.data >= data)
+			{
+				idx = (2 * idx) + 1;
+			}
+			else
+			{
+				idx = (2 * idx) + 2;
+			}
+		}
+		else
+		{
+			fseek(file, getPosition(idx), SEEK_SET);
+			curr.data = data;
+			curr.address = address;
+			curr.exists = true;
+			curr.write(file);
+			break;
+		}
+	}	
+}
+
+// TODO retrun all matches not only one 
+long BinaryTree::search(FILE* file, int value)
+{
+	int idx = 0;
+	
+	Node curr;
+	while(true)
+	{
+		fseek(file, getPosition(idx), SEEK_SET);
+		
 		curr.read(file);
 		if( feof(file) )
 	    { 
@@ -147,19 +293,26 @@ void BinaryTree::search(FILE* file, int value)
 	    }
 		if(curr.exists)
 		{
-			cout << "READED: " << curr.data << ": " << curr.address << endl;
+			//cout << "pos: " << pos << endl;
+			cout << "READED: " << curr.exists << ": " << curr.data << ": " << curr.address << endl;
 
 			if(curr.data == value)
 			{
-				cout << curr.data << ": " << curr.address << endl;
+				cout << "FOUND IT: " << curr.data << ": " << curr.address << endl;
+				return curr.address;
 			}
-			else if (curr.data > value)
+			
+			if (curr.data >= value)
 			{
-				fseek(file, (2 * pos) + 1, SEEK_SET);
+				//cout << "left" << endl;
+				//fseek(file, ((2 * idx) + 1) * (sizeof(curr.data) + sizeof(curr.address) + sizeof(curr.exists)), SEEK_SET);
+				idx = (2 * idx) + 1;
 			}
 			else
 			{
-				fseek(file, (2 * pos) + 2, SEEK_SET);
+				//cout << "right" << endl;
+				//fseek(file, ((2 * idx) + 2) * (sizeof(curr.data) + sizeof(curr.address) + sizeof(curr.exists)), SEEK_SET);
+				idx = (2 * idx) + 2;
 			}
 		}
 		else
@@ -167,7 +320,24 @@ void BinaryTree::search(FILE* file, int value)
 			break;
 		}
 
-		pos++;
+	}
+}
+
+
+void BinaryTree::readAll(FILE* file)
+{
+	fseek(file, 0, SEEK_SET);
+	
+	Node curr;
+	while(true)
+	{
+		curr.read(file);
+		if( feof(file) )
+	    { 
+	        break;
+	    }
+		
+		cout << "READED: " << curr.exists << ": " << curr.data << ": " << curr.address << endl;
 	}
 }
 
