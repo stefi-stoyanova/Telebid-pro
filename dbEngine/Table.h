@@ -32,14 +32,16 @@ public:
 	void insertLine(vector<pair<string,string> >& values);
 	void updateLine(vector<pair<string,string> >& values, const char* name, const char* value);
 
-	int getLinesStartPosition();
 	void readAllLines();
-	void readLines(const char* name, const char* val); 
+	void readLines(const char* name, const char* val);
+	void searchByIndex(const char* name, const char* val);
+
 
 
 	int deleteLine(const char* name, const char* value);
 
 private:
+	int getLinesStartPosition();
 	void skipColumn(int);
 
 };
@@ -120,7 +122,7 @@ void Table::readColumnsInFile()
 		if(indexFile)
 		{
 			c->hasIndex = true;
-			cout << "hasIndex TRUE: " << c->hasIndex << endl;
+			//cout << "hasIndex : "<< c->name << " " << c->hasIndex << endl;
 		}
 		//cout << nameLength << endl;
 		//cout << c->name << endl;
@@ -153,8 +155,8 @@ void Table::insertLine(vector<pair<string,string> >& values)
 		throw "Invalid parameters 1!";
 
 	fseek(file, 0, SEEK_END);
-	fwrite("1", 1, 1, file);
 	long linePosition = ftell(file);
+	fwrite("1", 1, 1, file);
 	for(int i = 0; i < columns.size(); i++)
 	{
 		int k = 0;
@@ -241,6 +243,62 @@ void Table::readAllLines()
 			{
 				skipColumn(columns[k]->type);
 			}
+		}
+	}
+}
+
+
+void Table::searchByIndex(const char* name, const char* val)
+{
+	string columnName = string(name);
+	for(int i = 0; i < columns.size(); ++i)
+	{
+		if(name == columns[i]->name)
+		{
+			if(!columns[i]->hasIndex)
+			{
+				break;
+			}
+			FILE* fileIndex = fopen((columns[i]->name + ".dat").c_str(), "r+");
+	    	if(!fileIndex)
+	    	{
+	    		throw "File not open!";
+	    	}
+	    	BinaryTree b;
+	    	long pos = b.search(fileIndex, atoi(val));
+	    	if(pos < 0)
+	    		return; 
+	    	fseek(file, pos, SEEK_SET);
+
+			int isLine = fgetc(file);
+			if(isLine == '1')
+			{
+		    	for(int k = 0; k < columns.size(); k++)
+				{
+
+					if(columns[k]->type == INT_TYPE)
+					{
+						int value = -1;
+						fread(& value, sizeof(value), 1, file);
+						cout << columns[k]->name << ": " << value << endl;
+					} 
+					else if(columns[k]->type == STRING_TYPE)
+					{
+						int length = -1;
+						fread(& length, sizeof(length),1, file);
+						char* buffer = new char[length];
+						fread(buffer, sizeof(char), length, file);
+						cout << columns[k]->name << ": " ;
+						for(int i = 0; i < length; i++)
+						{
+							cout << buffer[i];
+						}
+						cout << endl;
+						delete[] buffer;
+					}
+				}
+			}
+			break;
 		}
 	}
 }
@@ -352,7 +410,7 @@ void Table::updateLine(vector<pair<string,string> >& values, const char* name, c
 }
 
 
-
+//TODO search by binary tree
 int Table::deleteLine(const char* name, const char* value)
 {
 	int deletedLines = 0;
@@ -361,7 +419,7 @@ int Table::deleteLine(const char* name, const char* value)
 	
 	for(int i = 0; i < lines; i++)
 	{	
-		int linePos = ftell(file);
+		long linePos = ftell(file);
 		int isLine  = fgetc(file);
 		if(isLine == '1')
 		{	
@@ -379,8 +437,9 @@ int Table::deleteLine(const char* name, const char* value)
 					    	{
 					    		throw "File not open!";
 					    	}
-					    	BinaryTree b; 
-					    	b.deleteNode(fileIndex, value, linePos);
+					    	BinaryTree b;
+					    	cout << "DELETE node from index: " << fileIndex << ": " << atoi(value) << " on pos: " << linePos << endl; 
+					    	b.deleteNode(fileIndex, atoi(value), linePos);
 					    	fclose(fileIndex);
 						}
 

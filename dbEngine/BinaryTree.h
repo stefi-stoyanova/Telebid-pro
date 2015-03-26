@@ -321,6 +321,7 @@ long BinaryTree::search(FILE* file, int value)
 		}
 
 	}
+	return -1;
 }
 
 

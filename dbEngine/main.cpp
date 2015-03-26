@@ -20,12 +20,16 @@ int main()
     	
 
         Table table("table.dat");
-        //table.readColumnsInFile();
+        table.readColumnsInFile();
         
-        //string id = "id";
-        //string int1 = "int";
-       /* table.addColumn(id, 1, true);
-        table.addColumn(int1, 1, false);
+
+        //table.deleteLine("id", "10");
+        
+        string id = "id";
+        string int1 = "int";
+        /*table.addColumn(id, 1, true);
+        table.addColumn(int1, 1, false); 
+
         table.writeColumnsInFile();*/
 
        /* vector<pair<string, string> > values;
@@ -34,9 +38,10 @@ int main()
 
         values.push_back(p1);
         values.push_back(p2);
-        table.insertLine(values);*/
+        table.insertLine(values);
+*/
 
-
+        table.searchByIndex("id", "10");
         //table.readAllLines();
 
 
@@ -66,8 +71,11 @@ int main()
             throw "File not open!";
         }
 
-        BinaryTree b;
-        b.search(file, 10);
+/*        BinaryTree b;
+        b.search(file, 10);*/
+
+
+        //b.deleteNode(file, 10, 535);
 
 
         /*b.addValue(5, 43);
